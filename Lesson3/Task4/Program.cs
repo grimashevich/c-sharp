@@ -10,7 +10,7 @@ namespace Task4
         {
             while (true)
             {
-                GenSeaИBattle();
+                GenSeaBattle();
                 Console.WriteLine("\nСгенерировать еще одну карту? (y/n)");
                 string answer = Console.ReadLine();
                 if (answer.ToLower() != "y")
@@ -19,7 +19,7 @@ namespace Task4
             }
         }
 
-        private static void GenSeaИBattle()
+        private static void GenSeaBattle()
         {
             var field = new int[10, 10];
             for (var i = 4; i > 0; i--)
