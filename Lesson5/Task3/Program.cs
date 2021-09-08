@@ -20,11 +20,13 @@ namespace Task3
             var fileName = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory,@"..\..\..\task3.bin"));
             using (BinaryWriter wr = new BinaryWriter(File.Open(fileName, FileMode.Create)))
             {
-                foreach (var tmp in userBytes)
-                {
-                    wr.Write(tmp);
-                }
+                wr.Write(userBytes);
             }
+
+            if (new FileInfo(fileName).Length == userBytes.Length)
+                Console.WriteLine("Запись прошла успешно");
+            else
+                Console.WriteLine("Что-то пошло не так...");
         }
 
         static byte[] ProcInts(string str)
