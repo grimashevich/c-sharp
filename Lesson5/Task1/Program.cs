@@ -9,7 +9,7 @@ namespace Task1
     {
         static void Main(string[] args)
         {
-            var fileName = "../../../task1.txt";
+            var fileName = @"..\..\..\task1.txt";
             Console.WriteLine("Введите данные для сохранения в файл, для окончания наберите q!");
             if (File.Exists(fileName)) File.Delete(fileName);
             var firstLine = true;
