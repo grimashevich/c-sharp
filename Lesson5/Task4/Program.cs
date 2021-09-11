@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace Task4
 {
@@ -18,34 +19,57 @@ namespace Task4
                 Console.WriteLine($" Такой директории не существует ({curDir})");
                 return;
             }
+
+            List<string> dirTree = new List<string>();
             Console.WriteLine("Рекурсивный листинг директории:\n");
-            PrintDirRec(curDir);
+            GenDirRec(curDir, ref dirTree);
+            SaveListing(dirTree, @"..\..\..\task4Rec.txt");
+            PrintDir(dirTree);
+
             Console.WriteLine();
             Console.WriteLine("Нерекурсивный листинг директории:\n");
-            PrintDirNonRec(curDir);
+            dirTree = GenDirNonRec(curDir);
+            SaveListing(dirTree, @"..\..\..\task4NonRec.txt");
+            PrintDir(dirTree);
         }
 
-        static void PrintDirRec(string dirAdress, string shift = "\t")
+        static void PrintDir(List<string> dirTree)
+        {
+            foreach (var str in dirTree)
+            {
+                Console.WriteLine(str);
+            }
+        }
+
+        static void  SaveListing(List<string> dirTree, string fileName)
+        {
+            string json = JsonSerializer.Serialize(dirTree);
+            File.WriteAllText(fileName, json);
+        }
+
+        static List<string> GenDirRec(string dirAdress, ref List<string> tree, string shift = "\t")
         {
             foreach (var dir in Directory.GetDirectories(dirAdress))
             {
-                Console.WriteLine("[dir]" + shift + Path.GetFileName(dir));
-                PrintDirRec(dir, shift + "  ");
+                tree.Add("[dir]" + shift + Path.GetFileName(dir));
+                GenDirRec(dir, ref tree, shift + "  ");
             }
 
             foreach (var file in Directory.GetFiles(dirAdress))
             {
-                Console.WriteLine("[file]" + shift + Path.GetFileName(file));
+                tree.Add("[file]" + shift + Path.GetFileName(file));
             }
+
+            return tree;
         }
 
 
-        static void PrintDirNonRec(string dirAdress, string shift = "\t")
+        static List<string> GenDirNonRec(string dirAdress, string shift = "\t")
         {
             Queue<string> files = new Queue<string>();
             List<string> tree = new List<string>();
             files.Enqueue(dirAdress);
-
+            
             //Кол-во слешей на старте. По ним определяем уровень вложенности
             int startBS = SubStrCount(dirAdress, @"\");
 
@@ -63,14 +87,21 @@ namespace Task4
                 
             }
             tree.Sort();
-            foreach (var curFile in tree)
+
+
+            for (int i = 0; i < tree.Count; i++)
             {
-                Console.Write(curFile.Split("?")[1]);
-                var curCubLevel = SubStrCount(curFile, @"\") - startBS - 1;
-                Console.Write("\t" + String.Concat(Enumerable.Repeat("  ", curCubLevel)));
-                Console.WriteLine(Path.GetFileName(curFile.Split("?")[0]));
-                
+                var tmpStr = tree[i].Split("?")[1];
+                /*Console.Write(curFile.Split("?")[1]);*/
+                var curCubLevel = SubStrCount(tree[i], @"\") - startBS - 1;
+                /*Console.Write("\t" + String.Concat(Enumerable.Repeat("  ", curCubLevel)));
+                Console.WriteLine(Path.GetFileName(curFile.Split("?")[0]));*/
+                tmpStr += "\t" + String.Concat(Enumerable.Repeat("  ", curCubLevel));
+                tmpStr +=  Path.GetFileName(tree[i].Split("?")[0]);
+                tree[i] = tmpStr;
             }
+
+            return tree;
         }
         
         static int SubStrCount(string str, string subStr)
