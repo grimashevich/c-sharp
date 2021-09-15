@@ -396,3 +396,13 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
+
+Lesson5/Task1/task1.txt
+
+Lesson5/Task2/startup.txt
+
+Lesson5/Task3/task3.bin
+
+Lesson5/Task4/task4NonRec.txt
+
+Lesson5/Task4/task4Rec.txt
